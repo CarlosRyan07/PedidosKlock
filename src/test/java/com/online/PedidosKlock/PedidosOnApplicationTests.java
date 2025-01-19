@@ -1,4 +1,4 @@
-package com.online.PedidosOn;
+package com.online.PedidosKlock;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
