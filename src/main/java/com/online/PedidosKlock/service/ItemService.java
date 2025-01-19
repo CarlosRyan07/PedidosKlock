@@ -27,15 +27,46 @@ public class ItemService {
     }
 
     public Item criarItem(Item item) {
+        // Validações de campos obrigatórios
+        if (item.getNome() == null || item.getNome().trim().isEmpty()) {
+            throw new IllegalArgumentException("O nome do item não pode ser vazio.");
+        }
+        if (item.getPreco() <= 0) {
+            throw new IllegalArgumentException("O preço do item deve ser maior que zero.");
+        }
+        if (item.getQuantidade() < 0) {
+            throw new IllegalArgumentException("A quantidade do item não pode ser negativa.");
+        }
+        if (item.getEstoque() < 0) {
+            throw new IllegalArgumentException("O estoque do item não pode ser negativo.");
+        }
+
         return itemRepository.save(item);
     }
 
     public Item atualizarItem(Long id, Item itemAtualizado) {
         Item itemExistente = buscarPorId(id);
+
+        // Validações para atualização
+        if (itemAtualizado.getNome() == null || itemAtualizado.getNome().trim().isEmpty()) {
+            throw new IllegalArgumentException("O nome do item não pode ser vazio.");
+        }
+        if (itemAtualizado.getPreco() <= 0) {
+            throw new IllegalArgumentException("O preço do item deve ser maior que zero.");
+        }
+        if (itemAtualizado.getQuantidade() < 0) {
+            throw new IllegalArgumentException("A quantidade do item não pode ser negativa.");
+        }
+        if (itemAtualizado.getEstoque() < 0) {
+            throw new IllegalArgumentException("O estoque do item não pode ser negativo.");
+        }
+
+        // Atualizar os campos necessários
         itemExistente.setNome(itemAtualizado.getNome());
         itemExistente.setPreco(itemAtualizado.getPreco());
         itemExistente.setQuantidade(itemAtualizado.getQuantidade());
         itemExistente.setEstoque(itemAtualizado.getEstoque());
+
         return itemRepository.save(itemExistente);
     }
 

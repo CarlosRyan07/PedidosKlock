@@ -2,7 +2,8 @@ package com.online.PedidosKlock.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,23 +39,27 @@ public class Pedido {
     private LocalDate dataCompra = LocalDate.now(); // Data do pedido será a data atual
 
 
-    public void calcularTotais() {
-        double total = 0.0;
-    
+    public void calcularTotais() {  
+        BigDecimal total = BigDecimal.ZERO;
+        
+        // Soma os preços de todos os itens no pedido
         for (Item item : itens) {
-            total += item.getPreco() * item.getQuantidade();
+            BigDecimal precoItem = BigDecimal.valueOf(item.getPreco());
+            BigDecimal quantidadeItem = BigDecimal.valueOf(item.getQuantidade());
+            total = total.add(precoItem.multiply(quantidadeItem));
         }
-    
-        // Arredondar para 2 casas decimais
-        this.total = Math.round(total * 100.0) / 100.0;
-    
+        
+        // Arredondando o total para 2 casas decimais
+        this.total = total.setScale(2, RoundingMode.HALF_UP).doubleValue();
+        
         // Aplicar desconto se o cliente for VIP
         if (cliente != null && cliente.isVip()) {
-            this.totalComDesconto = Math.round(total * 0.9 * 100.0) / 100.0; // 10% de desconto
+            this.totalComDesconto = total.multiply(BigDecimal.valueOf(0.9)).setScale(2, RoundingMode.HALF_UP).doubleValue(); // 10% de desconto
         } else {
-            this.totalComDesconto = total;
+            this.totalComDesconto = total.setScale(2, RoundingMode.HALF_UP).doubleValue();
         }
-    }       
+    }
+       
     
     public void verificarEstoque() {
         this.emEstoque = itens.stream()

@@ -17,7 +17,7 @@ import java.util.List;
 public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
-    private final ClienteRepository clienteRepository;  // Adicione esta linha
+    private final ClienteRepository clienteRepository;  // Adicionando o ClienteRepository
     private final ItemRepository itemRepository;
 
     public PedidoService(PedidoRepository pedidoRepository, ClienteRepository clienteRepository, ItemRepository itemRepository) {
@@ -32,72 +32,73 @@ public class PedidoService {
 
     public Pedido buscarPorId(Long id) {
         return pedidoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Pedido não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Erro: Pedido não encontrado com o id " + id));
     }
 
     public Pedido criarPedido(Pedido pedido) {
+        // Validação para garantir que o pedido contenha itens
         if (pedido.getItens() == null || pedido.getItens().isEmpty()) {
-            throw new IllegalArgumentException("O pedido deve conter ao menos um item.");
+            throw new IllegalArgumentException("Erro: O pedido deve conter ao menos um item.");
         }
 
+        // Validação para garantir que o cliente esteja informado
         if (pedido.getCliente() == null || pedido.getCliente().getId() == null) {
-            throw new IllegalArgumentException("O cliente do pedido não foi informado.");
+            throw new IllegalArgumentException("Erro: O cliente do pedido não foi informado.");
         }
 
-        // Verificar e carregar o cliente do banco
+        // Verificar se o cliente existe no banco de dados
         Cliente cliente = clienteRepository.findById(pedido.getCliente().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Erro: Cliente não encontrado com o id " + pedido.getCliente().getId()));
+
         pedido.setCliente(cliente);
 
-        // Criar uma nova lista de itens carregados do banco
+        // Criar uma nova lista de itens, carregando do banco
         List<Item> itensCarregados = new ArrayList<>();
         for (Item itemRequisitado : pedido.getItens()) {
-            // Buscar o item no banco pelo ID
             Item itemBanco = itemRepository.findById(itemRequisitado.getId())
-                    .orElseThrow(() -> new EntityNotFoundException("Item com ID " + itemRequisitado.getId() + " não encontrado"));
+                    .orElseThrow(() -> new EntityNotFoundException("Erro: Item com ID " + itemRequisitado.getId() + " não encontrado"));
 
-            // Atualizar a quantidade com o valor enviado no JSON
+            // Atualizando a quantidade com o valor informado no JSON
             itemBanco.setQuantidade(itemRequisitado.getQuantidade());
 
             itensCarregados.add(itemBanco);
         }
         pedido.setItens(itensCarregados);
 
-        // Calcular valores do pedido
-        pedido.calcularTotais(); // Calcula total e totalComDesconto
-        pedido.verificarEstoque(); // Verifica se todos os itens têm estoque
-        pedido.definirDataEntrega(); // Define a data de entrega
+        // Calcular totais e verificar estoque
+        pedido.calcularTotais();
+        pedido.verificarEstoque();
+        pedido.definirDataEntrega();
 
         // Salvar o pedido no banco
         return pedidoRepository.save(pedido);
     }
 
-    
-
     public Pedido atualizarPedido(Long id, Pedido pedidoAtualizado) {
+        // Procurando o pedido existente
         Pedido pedidoExistente = buscarPorId(id);
 
-        // Atualizar os campos necessários
+        // Atualizando os campos necessários
         pedidoExistente.setItens(pedidoAtualizado.getItens());
         pedidoExistente.calcularTotais();
         pedidoExistente.verificarEstoque();
         pedidoExistente.definirDataEntrega();
 
+        // Salvando as alterações
         return pedidoRepository.save(pedidoExistente);
     }
 
     public void excluirPedido(Long id) {
         Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Pedido não encontrado"));
-    
-        // Verificar se o pedido contém itens e se a exclusão do pedido não afeta o cliente
+                .orElseThrow(() -> new EntityNotFoundException("Erro: Pedido não encontrado com o id " + id));
+
+        // Verificar se o pedido contém itens antes de excluí-lo
         if (pedido.getItens() != null && !pedido.getItens().isEmpty()) {
             // Lógica para garantir que a exclusão do pedido não afete o cliente
-            // No caso de pedido com itens, ele é excluído sem afetar o cliente
+            // Neste caso, a exclusão do pedido não deve afetar o cliente.
         }
-    
-       
+
+        // Excluindo o pedido
         pedidoRepository.deleteById(id);
     }
-    
 }

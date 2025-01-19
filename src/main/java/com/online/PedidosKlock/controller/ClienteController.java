@@ -1,5 +1,7 @@
 package com.online.PedidosKlock.controller;
 
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,32 +20,56 @@ public class ClienteController {
         this.clienteService = clienteService;
     }
 
+    @PostMapping
+    public ResponseEntity<?> criarCliente(@RequestBody Cliente cliente) {
+        try {
+            Cliente novoCliente = clienteService.criarCliente(cliente);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novoCliente);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @GetMapping
-    public List<Cliente> listarTodos() {
-        return clienteService.listarTodos();
+    public ResponseEntity<List<Cliente>> listarTodos() {
+        List<Cliente> clientes = clienteService.listarTodos();
+        if (clientes.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.ok(clientes);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> buscarPorId(@PathVariable Long id) {
-        Cliente cliente = clienteService.buscarPorId(id);
-        return ResponseEntity.ok(cliente);
-    }
-
-    @PostMapping
-    public ResponseEntity<Cliente> criarCliente(@RequestBody Cliente cliente) {
-        Cliente novoCliente = clienteService.criarCliente(cliente);
-        return ResponseEntity.ok(novoCliente);
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+        try {
+            Cliente cliente = clienteService.buscarPorId(id);
+            return ResponseEntity.ok(cliente);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> atualizarCliente(@PathVariable Long id, @RequestBody Cliente clienteAtualizado) {
-        Cliente cliente = clienteService.atualizarCliente(id, clienteAtualizado);
-        return ResponseEntity.ok(cliente);
+    public ResponseEntity<?> atualizarCliente(@PathVariable Long id, @RequestBody Cliente clienteAtualizado) {
+        try {
+            Cliente cliente = clienteService.atualizarCliente(id, clienteAtualizado);
+            return ResponseEntity.ok(cliente);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirCliente(@PathVariable Long id) {
-        clienteService.excluirCliente(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> excluirCliente(@PathVariable Long id) {
+        try {
+            clienteService.excluirCliente(id);
+            return ResponseEntity.ok("Cliente excluído com sucesso.");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

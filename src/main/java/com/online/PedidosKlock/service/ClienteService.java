@@ -1,5 +1,6 @@
 package com.online.PedidosKlock.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.online.PedidosKlock.model.Cliente;
@@ -25,22 +26,36 @@ public class ClienteService {
 
     public Cliente buscarPorId(Long id) {
         return clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado!"));
+                .orElseThrow(() -> new EntityNotFoundException("Cliente com ID " + id + " não encontrado!"));
     }
 
     public Cliente criarCliente(Cliente cliente) {
+        if (cliente.getNome() == null || cliente.getNome().isEmpty()) {
+            throw new IllegalArgumentException("O nome do cliente não pode estar vazio.");
+        }
+        if (cliente.getEmail() == null || cliente.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("O email do cliente não pode estar vazio.");
+        }
         return clienteRepository.save(cliente);
     }
 
     public Cliente atualizarCliente(Long id, Cliente clienteAtualizado) {
         Cliente clienteExistente = buscarPorId(id);
+
+        if (clienteAtualizado.getNome() == null || clienteAtualizado.getNome().isEmpty()) {
+            throw new IllegalArgumentException("O nome do cliente não pode estar vazio.");
+        }
+        if (clienteAtualizado.getEmail() == null || clienteAtualizado.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("O email do cliente não pode estar vazio.");
+        }
+
+        clienteExistente.setNome(clienteAtualizado.getNome());
         clienteExistente.setEmail(clienteAtualizado.getEmail());
         clienteExistente.setVip(clienteAtualizado.isVip());
         return clienteRepository.save(clienteExistente);
     }
 
     public void excluirCliente(Long id) {
-        // Verifica se o cliente está associado a algum pedido
         boolean clienteAssociado = pedidoRepository.existsByClienteId(id);
 
         if (clienteAssociado) {
