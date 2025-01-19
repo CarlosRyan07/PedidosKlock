@@ -1,7 +1,8 @@
-package com.online.PedidosOn.service.util;
+package com.online.PedidosKlock.service.util;
 
-import com.online.PedidosOn.model.Pedido;
 import org.springframework.stereotype.Component;
+
+import com.online.PedidosKlock.model.Pedido;
 
 @Component
 public class EmailService {

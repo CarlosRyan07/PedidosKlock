@@ -1,9 +1,10 @@
-package com.online.PedidosOn.repository;
+package com.online.PedidosKlock.repository;
 
 
-import com.online.PedidosOn.model.Pedido;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.online.PedidosKlock.model.Pedido;
 
 @Repository
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {

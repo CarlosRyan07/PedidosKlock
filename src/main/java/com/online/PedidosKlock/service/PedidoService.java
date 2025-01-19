@@ -1,12 +1,12 @@
-package com.online.PedidosOn.service;
-
-import com.online.PedidosOn.model.Cliente;
-import com.online.PedidosOn.model.Pedido;
-import com.online.PedidosOn.repository.ClienteRepository;
-import com.online.PedidosOn.repository.PedidoRepository;
+package com.online.PedidosKlock.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.online.PedidosKlock.model.Cliente;
+import com.online.PedidosKlock.model.Pedido;
+import com.online.PedidosKlock.repository.ClienteRepository;
+import com.online.PedidosKlock.repository.PedidoRepository;
 
 import java.util.List;
 

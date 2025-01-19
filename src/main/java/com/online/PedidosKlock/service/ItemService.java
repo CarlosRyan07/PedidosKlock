@@ -1,9 +1,10 @@
-package com.online.PedidosOn.service;
+package com.online.PedidosKlock.service;
 
-import com.online.PedidosOn.model.Item;
-import com.online.PedidosOn.repository.ItemRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.online.PedidosKlock.model.Item;
+import com.online.PedidosKlock.repository.ItemRepository;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.online.PedidosOn.model;
+package com.online.PedidosKlock.model;
 
 import jakarta.persistence.*;
 import lombok.Data;

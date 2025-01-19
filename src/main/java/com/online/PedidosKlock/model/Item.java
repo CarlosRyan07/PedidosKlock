@@ -1,4 +1,4 @@
-package com.online.PedidosOn.model;
+package com.online.PedidosKlock.model;
 
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

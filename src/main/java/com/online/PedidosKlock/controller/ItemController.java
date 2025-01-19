@@ -1,11 +1,12 @@
-package com.online.PedidosOn.controller;
+package com.online.PedidosKlock.controller;
 
-import com.online.PedidosOn.model.Item;
-import com.online.PedidosOn.service.ItemService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.online.PedidosKlock.model.Item;
+import com.online.PedidosKlock.service.ItemService;
 
 import java.util.List;
 

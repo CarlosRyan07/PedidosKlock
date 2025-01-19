@@ -1,13 +1,13 @@
-package com.online.PedidosOn;
+package com.online.PedidosKlock;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PedidosOnApplication {
+public class PedidosKlockApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PedidosOnApplication.class, args);
+		SpringApplication.run(PedidosKlockApplication.class, args);
 	}
 
 }

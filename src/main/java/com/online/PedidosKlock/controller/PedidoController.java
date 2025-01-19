@@ -1,9 +1,10 @@
-package com.online.PedidosOn.controller;
+package com.online.PedidosKlock.controller;
 
-import com.online.PedidosOn.model.Pedido;
-import com.online.PedidosOn.service.PedidoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.online.PedidosKlock.model.Pedido;
+import com.online.PedidosKlock.service.PedidoService;
 
 import java.util.List;
 
