@@ -40,14 +40,14 @@ public class ClienteService {
     }
 
     public Cliente atualizarCliente(Long id, Cliente clienteAtualizado) {
-        Cliente clienteExistente = buscarPorId(id);
-
         if (clienteAtualizado.getNome() == null || clienteAtualizado.getNome().isEmpty()) {
             throw new IllegalArgumentException("O nome do cliente não pode estar vazio.");
         }
         if (clienteAtualizado.getEmail() == null || clienteAtualizado.getEmail().isEmpty()) {
             throw new IllegalArgumentException("O email do cliente não pode estar vazio.");
         }
+
+        Cliente clienteExistente = buscarPorId(id);
 
         clienteExistente.setNome(clienteAtualizado.getNome());
         clienteExistente.setEmail(clienteAtualizado.getEmail());
@@ -56,10 +56,18 @@ public class ClienteService {
     }
 
     public void excluirCliente(Long id) {
+        if (!clienteRepository.existsById(id)) {
+            throw new EntityNotFoundException("Cliente com ID " + id + " não encontrado!");
+        }
+
         boolean clienteAssociado = pedidoRepository.existsByClienteId(id);
 
         if (clienteAssociado) {
             throw new IllegalStateException("Não é possível excluir o cliente pois ele está associado a pedidos.");
+        }
+
+        if (!clienteRepository.existsById(id)) {
+            throw new EntityNotFoundException("Cliente com ID " + id + " não encontrado!");
         }
 
         clienteRepository.deleteById(id);

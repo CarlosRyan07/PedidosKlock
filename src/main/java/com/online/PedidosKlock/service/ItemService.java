@@ -45,8 +45,6 @@ public class ItemService {
     }
 
     public Item atualizarItem(Long id, Item itemAtualizado) {
-        Item itemExistente = buscarPorId(id);
-
         // Validações para atualização
         if (itemAtualizado.getNome() == null || itemAtualizado.getNome().trim().isEmpty()) {
             throw new IllegalArgumentException("O nome do item não pode ser vazio.");
@@ -60,6 +58,8 @@ public class ItemService {
         if (itemAtualizado.getEstoque() < 0) {
             throw new IllegalArgumentException("O estoque do item não pode ser negativo.");
         }
+
+        Item itemExistente = buscarPorId(id);
 
         // Atualizar os campos necessários
         itemExistente.setNome(itemAtualizado.getNome());
