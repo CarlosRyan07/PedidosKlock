@@ -64,8 +64,7 @@ e abaixo como eu fiz isso.
 
 1. **Clone o repositório:**
    ```bash
-   git clone <url-do-repositorio>
-   cd klok-pedido-service
+   git clone https://github.com/CarlosRyan07/PedidosKlock
    ```
 
 2. **Configure o projeto:**
