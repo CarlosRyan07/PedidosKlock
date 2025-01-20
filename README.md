@@ -2,6 +2,56 @@
 
 Este projeto é uma refatoração do serviço de pedidos originalmente fornecido. Ele foi projetado para melhorar a legibilidade, manutenção e eficiência, garantindo que a lógica de negócios seja clara e bem organizada.
 
+A Classe que me foi apresetanda para refatoração foi essa:
+
+```java
+  public class PedidoService {
+
+    public void processarPedidos(List<Pedido> pedidos) {
+        for (Pedido pedido : pedidos) {
+            double total = 0;
+
+            for (Item item : pedido.getItems()) {
+                total += item.getPreco() * item.getQuantidade();
+            }
+
+            pedido.setTotal(total);
+
+            if (pedido.getCliente().isVip()) {
+                total *= 0.9;
+            }
+
+            pedido.setTotalComDesconto(total);
+
+            boolean emEstoque = true;
+            for (Item item : pedido.getItems()) {
+                if (item.getQuantidade() > item.getEstoque()) {
+                    emEstoque = false;
+                    break;
+                }
+            }
+            pedido.setEmEstoque(emEstoque);
+
+            if (emEstoque) {
+                pedido.setDataEntrega(LocalDate.now().plusDays(3));
+            } else {
+                pedido.setDataEntrega(null);
+            }
+
+            if (emEstoque) {
+                enviarNotificacao(pedido.getCliente().getEmail(), "Seu pedido será entregue em breve.");
+            } else {
+                enviarNotificacao(pedido.getCliente().getEmail(), "Um ou mais itens do seu pedido estão fora de estoque.");
+            }
+        }
+    }
+
+    private void enviarNotificacao(String email, String mensagem) {
+        System.out.println("Enviando e-mail para " + email + ": " + mensagem);
+    }
+}
+```
+e abaixo como eu fiz isso.
 ## Tecnologias Utilizadas
 
 - **Java 17**
@@ -19,15 +69,18 @@ Este projeto é uma refatoração do serviço de pedidos originalmente fornecido
    ```
 
 2. **Configure o projeto:**
-   Certifique-se de que você tem o JDK 17+ e o Maven instalados.
+  Certifique-se de que você tem o JDK 17+ e o Maven instalados.
 
 3. **Execute o projeto:**
-   ```bash
-   mvn spring-boot:run
-   ```
+  ```bash
+  Rode a classe `PedidosKlockApplication` para iniciar o serviço.
+  ```
 
 4. **Acesse a API:**
-   O serviço estará disponível em `http://localhost:8080`.
+  O serviço estará disponível em `http://localhost:8080`.
+
+5. **Utilizei o Postman:**
+  Importe a coleção de requests do Postman disponível no repositório para testar os endpoints da API.
 
 ## Endpoints da API
 
