@@ -9,6 +9,7 @@ import com.online.PedidosKlock.model.Pedido;
 import com.online.PedidosKlock.repository.ClienteRepository;
 import com.online.PedidosKlock.repository.PedidoRepository;
 import com.online.PedidosKlock.repository.ItemRepository;
+import com.online.PedidosKlock.service.util.EmailService;  // Importando o EmailService
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +18,15 @@ import java.util.List;
 public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
-    private final ClienteRepository clienteRepository;  // Adicionando o ClienteRepository
+    private final ClienteRepository clienteRepository;
     private final ItemRepository itemRepository;
+    private final EmailService emailService;  // Injetando o EmailService
 
-    public PedidoService(PedidoRepository pedidoRepository, ClienteRepository clienteRepository, ItemRepository itemRepository) {
+    public PedidoService(PedidoRepository pedidoRepository, ClienteRepository clienteRepository, ItemRepository itemRepository, EmailService emailService) {
         this.pedidoRepository = pedidoRepository;
         this.clienteRepository = clienteRepository;
         this.itemRepository = itemRepository;
+        this.emailService = emailService;  // Inicializando a dependência
     }
 
     public List<Pedido> listarTodos() {
@@ -70,6 +73,8 @@ public class PedidoService {
         pedido.verificarEstoque();
         pedido.definirDataEntrega();
 
+        // Enviar notificação por e-mail
+        emailService.enviarNotificacao(pedido);
         // Salvar o pedido no banco
         return pedidoRepository.save(pedido);
     }
@@ -83,6 +88,9 @@ public class PedidoService {
         pedidoExistente.calcularTotais();
         pedidoExistente.verificarEstoque();
         pedidoExistente.definirDataEntrega();
+
+        // Enviar notificação por e-mail
+        emailService.enviarNotificacao(pedidoExistente);
 
         // Salvando as alterações
         return pedidoRepository.save(pedidoExistente);

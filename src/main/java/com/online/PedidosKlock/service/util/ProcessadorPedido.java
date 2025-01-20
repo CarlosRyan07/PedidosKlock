@@ -7,7 +7,7 @@ import com.online.PedidosKlock.model.Pedido;
 import java.time.LocalDate;
 
 @Component
-public class PedidoProcessor {
+public class ProcessadorPedido {
 
     public void processarEValidar(Pedido pedido) {
         calcularTotais(pedido);
